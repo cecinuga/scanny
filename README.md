@@ -1,5 +1,5 @@
-🔴 Implementare resizing stack quando è pieno
-🟠 Implementare gestione errori
-🟡 Aggiungere test unitari
-🟢 Ottimizzare prestazioni
-🔵 Documentare codice
+- 🔴 Implement stack resizing when full
+- 🟠 Implement error handling
+- 🟡 Add unit tests
+- 🟢 Optimize performance
+- 🔵 Document your code
