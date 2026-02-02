@@ -1,16 +1,38 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <error.h>
 #include "stack.h"
 
 /** Create a new stack with a specific capacity. */
 Stack *stk_create(size_t cap){
+    if(cap == 0){
+        fprintf(stderr, "%s", "stack capacity must be greater than zero.\n");
+        return NULL;
+    }
+
     Stack *stack = malloc(sizeof(*stack));
+    if(stack == NULL){
+        fprintf(stderr, "%s", "stack allocation failed.\n");
+        return NULL;
+    }
+
+    stack->items = malloc(cap * sizeof(int));
+    if(stack->items == NULL){
+        fprintf(stderr, "%s", "stack buffer allocation failed.\n");
+        free(stack);
+        return NULL;
+    }
+
     stack->size = 0;
     stack->cap = cap;
-    stack->items = calloc(cap, sizeof(void*));
 
     return stack;
+}
+
+bool stk_empty(const Stack *stack){
+    if(stack == NULL){
+        return true;
+    }
+    return stack->size == 0;
 }
 
 /**
@@ -19,19 +41,18 @@ Stack *stk_create(size_t cap){
  * - **Memory ownership of item remains with the caller**
  * - stack and item must be non-null
  */
-int stk_push(Stack *stack, void *item){
+int stk_push(Stack *stack, int item){
     if(stack == NULL){
         fprintf(stderr, "%s", "stack must be non-null.\n");
         return 0;
     }
-    if(item == NULL){
-        fprintf(stderr, "%s", "item must be non-null.\n");
-        return 0;
-    }
-    
+
     if(stack->size == stack->cap){
-        int new_cap = stack->cap*2;
-        void **new_items = realloc(stack->items, new_cap*sizeof(void*));
+        size_t new_cap = stack->cap * 2;
+        if(new_cap == 0){
+            new_cap = 1;
+        }
+        int *new_items = realloc(stack->items, new_cap * sizeof(int));
         if(new_items == NULL){
             fprintf(stderr, "%s", "stack resizing failed.\n");
             return 0;
@@ -46,11 +67,7 @@ int stk_push(Stack *stack, void *item){
     return 1;
 }
 
-/**
- * remove last item in the stack and decrease size.
- * - stack must be non-null
- */
-void *stk_pop(Stack *stack){
+int stk_top(const Stack *stack){
     if(stack == NULL){
         fprintf(stderr, "%s", "stack must be non-null.\n");
         return 0;
@@ -61,8 +78,26 @@ void *stk_pop(Stack *stack){
         return 0;
     }
 
-    void *out = stack->items[--stack->size];
-    stack->items[stack->size] = NULL;
+    return stack->items[stack->size-1];
+}
+
+/**
+ * remove last item in the stack and decrease size.
+ * - stack must be non-null
+ */
+int stk_pop(Stack *stack){
+    if(stack == NULL){
+        fprintf(stderr, "%s", "stack must be non-null.\n");
+        return 0;
+    }
+    
+    if(stack->size == 0){
+        fprintf(stderr, "%s", "stack is empty.\n");
+        return 0;
+    }
+
+    int out = stack->items[--stack->size];
+    stack->items[stack->size] = 0;
 
     return out;
 }
@@ -70,8 +105,7 @@ void *stk_pop(Stack *stack){
 /**Memory ownership of items remains with the caller */
 void stk_free(Stack *stack){
     if(stack == NULL){
-        fprintf(stderr, "%s", "stack must be non-null.\n");
-        return 0;
+        return;
     }
     free(stack->items);
     free(stack);
