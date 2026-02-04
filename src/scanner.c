@@ -45,19 +45,26 @@ static char *insert_concatenation(const char *re) {
     return out;
 }
 
-static TNode *make_fragment(char token){
-    TNode *init_state = malloc(sizeof(*init_state));
-    TNode *acc_state = malloc(sizeof(*acc_state));
-
-    init_state->state = 0;
-    init_state->token = token;
-    init_state->to = acc_state;
-    acc_state->state = 1;
-
-    return init_state;
+static char top_token(Stack *stack){
+    if(stack == NULL){
+        printf("[!] Error stack must be non-null");
+    }
+    return (char)stk_top(stack);
 }
 
+
+static char pop_token(Stack *stack){
+    if(stack == NULL){
+        printf("[!] Error stack must be non-null");
+    }
+    return (char)stk_pop(stack);
+}
+
+
 void apply_operator(Stack *stack, char op){
+    if(stack == NULL){
+        printf("[!] Error stack must be non-null");
+    }
     switch (op)
     {
     case '.':
@@ -77,7 +84,7 @@ void apply_operator(Stack *stack, char op){
 /// @brief Apply the thompson transformation.
 /// @param input the regex
 /// @return the related NFA.
-TNode *thompson(char *input){
+int thompson(char *input){
     Stack *op_stack = stk_create(50);
     Stack *frag_stack = stk_create(50);
     char *extended_input = insert_concatenation(input);
@@ -86,7 +93,7 @@ TNode *thompson(char *input){
     while(extended_input[i]){
         char token = extended_input[i];
         if(token == '('){
-            push_token(op_stack, token);
+            stk_push(op_stack, token);
         } 
         else if (token == ')'){
             while (top_token(op_stack) != '('){
@@ -96,7 +103,10 @@ TNode *thompson(char *input){
         }
         else if(is_literal(token)){
             
-            
         }
+        
+        i++;
     }
+
+    return 0;
 }
