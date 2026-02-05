@@ -60,15 +60,32 @@ static char pop_token(Stack *stack){
     return (char)stk_pop(stack);
 }
 
+static int push_frag(Stack *stack, Fragment *frag){
+    if(stack == NULL){
+        printf("[!] Error stack must be non-null");
+    }
+    return stk_push(stack, frag);
+}
 
-void apply_operator(Stack *stack, char op){
+static Fragment *pop_frag(Stack *stack){
+    if(stack == NULL){
+        printf("[!] Error stack must be non-null");
+    }
+    return (Fragment*)stk_pop(stack);
+}
+
+int new_state(){
+
+}
+
+static void apply_operator(Stack *stack, char op){
     if(stack == NULL){
         printf("[!] Error stack must be non-null");
     }
     switch (op)
     {
     case '.':
-        
+        /* code */
         break;
     
     case '|':
@@ -87,23 +104,12 @@ void apply_operator(Stack *stack, char op){
 int thompson(char *input){
     Stack *op_stack = stk_create(50);
     Stack *frag_stack = stk_create(50);
+
     char *extended_input = insert_concatenation(input);
 
     int i = 0;
     while(extended_input[i]){
         char token = extended_input[i];
-        if(token == '('){
-            stk_push(op_stack, token);
-        } 
-        else if (token == ')'){
-            while (top_token(op_stack) != '('){
-                apply_operator(frag_stack, pop_token(op_stack));
-            }
-            pop_token(op_stack); // remove '('
-        }
-        else if(is_literal(token)){
-            
-        }
         
         i++;
     }

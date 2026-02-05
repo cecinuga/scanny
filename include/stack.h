@@ -9,11 +9,11 @@
  */
 typedef struct Stack {
     size_t size;    // current number of elements in the stack
-    size_t cap;     // maximum allocated capacity
+    size_t capacity;     // maximum allocated capacity
     int *items;     // dynamically allocated array of integers
 } Stack;
 
-Stack *stk_create(size_t cap);
+Stack *stk_create(size_t capacity);
 void stk_free(Stack *stack);
 bool stk_empty(const Stack *stack);
 int stk_push(Stack *stack, int value);

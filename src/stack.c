@@ -23,7 +23,7 @@ Stack *stk_create(size_t cap){
     }
 
     stack->size = 0;
-    stack->cap = cap;
+    stack->capacity = cap;
 
     return stack;
 }
@@ -47,8 +47,8 @@ int stk_push(Stack *stack, int item){
         return 0;
     }
 
-    if(stack->size == stack->cap){
-        size_t new_cap = stack->cap * 2;
+    if(stack->size == stack->capacity){
+        size_t new_cap = stack->capacity * 2;
         if(new_cap == 0){
             new_cap = 1;
         }
@@ -59,7 +59,7 @@ int stk_push(Stack *stack, int item){
         }
 
         stack->items = new_items;
-        stack->cap = new_cap;
+        stack->capacity = new_cap;
     }
 
     stack->items[stack->size++] = item;
