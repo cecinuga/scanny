@@ -8,7 +8,7 @@
 
 int main(void){
     char *re = "ab(cd)";
-    printf("%s -> %s\n", re, insert_concatenation(re));
+    thompson(re);
 
     return 0;
 }

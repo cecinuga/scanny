@@ -1,27 +1,39 @@
 #ifndef STRUCT
 #define STRUCT
 
-typedef enum TransactionType {
-    TRANSACTION_TOKEN,
-    TRANSACTION_EPSILON
-} TransactionType;
+typedef struct Transition {
+    char symbol;          // simbolo o EPSILON
+    int  target;          // stato target
+    int  next;            // prossima transizione dello stesso stato
+} Transition;
 
-typedef struct Fragment {
-    int start;
-    int *outs;
-} Fragment;
 
-typedef struct State {
-    int id;
-    int *outs;
+typedef struct {
+    int first_transition;  // indice nella transitions[]
 } State;
 
-typedef struct Transaction {
-    TransactionType typo;
-    char token;
-    int target;
-} Transaction;
+typedef struct OutList {
+    int transition;
+    struct OutList *next;
+} OutList;
 
-int thompson(char *input);
+typedef struct {
+    int start;
+    OutList *out;
+} Fragment;
+
+typedef struct {
+    Fragment data[1024];
+    int top;
+} FragStack;
+
+typedef struct {
+    char data[1024];
+    int top;
+} OpStack;
+
+
+Fragment thompson(const char *re);
+int finish_nfa(Fragment f);
 
 #endif
